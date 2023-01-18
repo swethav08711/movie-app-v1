@@ -4,10 +4,11 @@ import { Inter } from '@next/font/google'
 import Header from '@/components/Header'
 import Navbar from '@/components/Navbar'
 import Results from '@/components/Results'
+import request from '@/utils/request'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function Home() {
+export default function Home({result}) {
   return (
     <>
       <Head>
@@ -21,7 +22,17 @@ export default function Home() {
       {/* Navbar */}
       <Navbar/>
       {/* Results */}
-      <Results/>
+      <Results result={result}/>
     </>
   )
+}
+
+export async function getServerSideProps(context){
+      const genre = context.query.genre || "fetchTrending";
+      console.log(genre)
+      const requests = await fetch(`https://api.themoviedb.org/3${request[genre].url}`).then(response=>response.json())
+    
+     return {
+      props: {result: requests.results}
+     }
 }
